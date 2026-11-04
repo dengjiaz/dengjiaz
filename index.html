@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>下单系统</title>
+    <style>
+        body { font-family: sans-serif; padding: 50px; background: #f0f2f5; }
+        .box { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>商品下单</h2>
+        <input type="text" id="customerName" placeholder="您的名字（如：张三）">
+        <input type="text" id="productName" placeholder="商品名称（如：机械键盘）">
+        <input type="number" id="quantity" placeholder="购买数量" value="1">
+        <button onclick="submitOrder()">立即下单</button>
+    </div>
+    <script>
+        // 同样，如果用了内网穿透，这里也要换成穿透后的 https 地址
+        const API_URL = 'http://127.0.0.1:8080/api/order'; 
+        async function submitOrder() {
+            const data = {
+                customerName: document.getElementById('customerName').value,
+                productName: document.getElementById('productName').value,
+                quantity: parseInt(document.getElementById('quantity').value)
+            };
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                alert("下单成功！订单号：" + result.data.orderId);
+            } catch (e) {
+                alert("下单失败，请检查网络");
+            }
+        }
+    </script>
+</body>
+</html>
